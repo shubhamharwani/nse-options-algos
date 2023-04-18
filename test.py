@@ -85,9 +85,25 @@ def trade_log(TL_StrikeList,TL_EntryPrice,TL_ExitPrice,TL_EntryTime,TL_OptionTyp
     df = pd.DataFrame(data)
     return df
 
+# definition to record current time
+def time_now():
+    time_now = datetime.datetime.now().time()
+    return time_now
+
+# definition to record current minute
+def minute_now():
+    minute_now = datetime.datetime.now().minute
+    return minute_now
+
+# definition to record current second
+def second_now():
+    second_now = datetime.datetime.now().second
+    return second_now
+
+# chat ID of telegram channel
 chat_id = -1001260902486
 # ALGO STARTED
-print(telegram_send_message(f'\nDND Setup - Algo Started @ {datetime.datetime.now().time()}',chat_id))
+print(telegram_send_message(f'\nDND Setup - Algo Started @ {time_now()}',chat_id))
 
 
 # START & END TIME
@@ -102,12 +118,12 @@ TL_Qty = []
 
 
 # WAITING FOR START TIME
-while datetime.datetime.now().time() < start_time:
-    print(f'Waiting for {start_time}. Time : {datetime.datetime.now().time()}')
+while time_now() < start_time:
+    print(f'Waiting for {start_time}. Time : {time_now()}')
     time.sleep(1)
 
 
-# set tv variable
+# set trading view variable
 tv = tvDatafeed.TvDatafeed()
 # fetch last 2 days data
 data = tv.get_hist(symbol='BANKNIFTY',exchange='NSE',interval=tvDatafeed.Interval.in_daily,n_bars=2,fut_contract=None)
@@ -117,39 +133,20 @@ pdh = data.iloc[0]['high']
 pdl = data.iloc[0]['low']
 TodayOpen = data.iloc[1]['open']
 
-print(f'\nPDH is {pdh}, PDH is {pdl} & Today\'s Open is {TodayOpen} ')
+print(telegram_send_message(f'\nPDH is {pdh}, PDH is {pdl} & Today\'s Open is {TodayOpen} '))
 
 # EXECUTE AT START TIME
 while True:
 
-    # banknifty spot token, LTP, ATM Strike & Diff between LTP & ATM
+    # fetch banknifty LTP
     spot_token = api.searchscrip('NSE','NIFTY BANK')['values'][0]['token']
     banknifty_LTP = float(api.get_quotes('NSE',spot_token)['lp'])
-    print(f'\nBanknifty LTP is {banknifty_LTP}')
+    print(f'\nBanknifty LTP is {banknifty_LTP}, Time Now : {time_now()}')
     
+    # banknifty is neutral
+    if banknifty_LTP < pdh and banknifty_LTP > pdl:
 
-    if banknifty_LTP < pdl and banknifty_LTP < TodayOpen:
-
-        Position = 'Bearish'
-        ce_tsym = ce_symbol(100)
-        ce_ltp = float(api.get_quotes(exchange='NFO',token=ce_tsym)['lp'])
-        CEQty = 50
-        print(telegram_send_message(f'Sell {CEQty} qty {ce_tsym} at {ce_ltp}',chat_id))
-
-        CEStrike = ce_tsym
-        CEEntryPrice = ce_ltp
-
-        TL_StrikeList.append(CEStrike)
-        TL_EntryTime.append(datetime.datetime.now().time())
-        TL_EntryPrice.append(CEEntryPrice)
-        TL_ExitPrice.append(None)
-        TL_OptionType.append('Call')
-        TL_Qty.append(CEQty)
-
-        break
-
-    elif banknifty_LTP < pdh and banknifty_LTP > pdl:
-
+        # Sell 25 qty of 100 CP Call & Put each
         Position = 'Neutral'
         ce_tsym = ce_symbol(100)
         pe_tsym = pe_symbol(100)
@@ -166,8 +163,8 @@ while True:
 
         TL_StrikeList.append(CEStrike)
         TL_StrikeList.append(PEStrike)
-        TL_EntryTime.append(datetime.datetime.now().time())
-        TL_EntryTime.append(datetime.datetime.now().time())
+        TL_EntryTime.append(time_now())
+        TL_EntryTime.append(time_now())
         TL_EntryPrice.append(CEEntryPrice)
         TL_EntryPrice.append(PEEntryPrice)
         TL_ExitPrice.append(None)
@@ -179,8 +176,10 @@ while True:
 
         break
 
+    # banknifty is bullish
     elif banknifty_LTP > pdh and banknifty_LTP > TodayOpen:
 
+        # Sell 50 qty of 100 CP Put
         Position = 'Bullish'
         pe_tsym = pe_symbol(100)
         pe_ltp = float(api.get_quotes(exchange='NFO',token=pe_tsym)['lp'])
@@ -191,7 +190,7 @@ while True:
         PEEntryPrice = pe_ltp
 
         TL_StrikeList.append(PEStrike)
-        TL_EntryTime.append(datetime.datetime.now().time())
+        TL_EntryTime.append(time_now())
         TL_EntryPrice.append(PEEntryPrice)
         TL_ExitPrice.append(None)
         TL_OptionType.append('Put')
@@ -200,8 +199,32 @@ while True:
         break
 
 
+    # banknifty is bearish (BNF < PDL & RED Candle)
+    elif banknifty_LTP < pdl and banknifty_LTP < TodayOpen:
+
+        # Sell 50 qty of 100 CP Call
+        Position = 'Bearish'
+        ce_tsym = ce_symbol(100)
+        ce_ltp = float(api.get_quotes(exchange='NFO',token=ce_tsym)['lp'])
+        CEQty = 50
+        print(telegram_send_message(f'Sell {CEQty} qty {ce_tsym} at {ce_ltp}',chat_id))
+
+        CEStrike = ce_tsym
+        CEEntryPrice = ce_ltp
+
+        TL_StrikeList.append(CEStrike)
+        TL_EntryTime.append(time_now())
+        TL_EntryPrice.append(CEEntryPrice)
+        TL_ExitPrice.append(None)
+        TL_OptionType.append('Call')
+        TL_Qty.append(CEQty)
+
+        break
+
+
+    # else wait
     else:
-        print('Wait for 2 more seconds. Checking again...')
+        print(f'Wait for 2 more seconds. Checking again... {time_now()}')
         time.sleep(2)
 
 
@@ -211,17 +234,12 @@ pnl_list = []
 
 
 
-
 # if end time has not come yet then
-while datetime.datetime.now().time() < end_time:
+while time_now() < end_time:
     try:
 
         # if position is Neutral
         if Position == 'Neutral':
-
-            #set minute & second
-            minute = datetime.datetime.now().minute
-            second = datetime.datetime.now().second
 
             # Find ATM
             banknifty_LTP = float(api.get_quotes('NSE',spot_token)['lp'])
@@ -240,15 +258,16 @@ while datetime.datetime.now().time() < end_time:
             pnl_list.append(pnl)
             
             # If positiion turns Bullish
-            if banknifty_LTP > pdh and minute%5 == 0:
+            if banknifty_LTP > pdh and minute_now() % 5 == 0:
                 
                 # Create a trade log from df
                 TL_df = trade_log(TL_StrikeList,TL_EntryPrice,TL_ExitPrice,TL_EntryTime,TL_OptionType)
                 print(TL_df)
 
-                # Find open call positions and fetch trading symbol
+                # Find open call positions and fetch call trading symbol to exit
                 open_calls = TL_df[(TL_df['TL_OptionType'] == 'Call') & (TL_df['TL_ExitPrice'].isna())]
                 print(open_calls)
+                
                 call_to_exit = open_calls.iloc[0]['TL_StrikeList']
                 print(f'call_to_exit is {call_to_exit}')
                 
@@ -270,13 +289,19 @@ while datetime.datetime.now().time() < end_time:
                 PEEntryPrice = pe_ltp
 
                 TL_StrikeList.append(PEStrike)
+                TL_EntryTime.append(time_now())
                 TL_EntryPrice.append(PEEntryPrice)
-                TL_EntryTime.append(datetime.datetime.now().time())
+                TL_ExitPrice.append(None)
+                TL_OptionType.append('Put')
+                TL_Qty.append(PEQty)
 
                 Position = 'Bullish'
 
+                time.sleep(10)
+
+
             # If position turns bearish
-            elif banknifty_LTP < pdl and minute % 5 == 0:
+            elif banknifty_LTP < pdl and minute_now() % 5 == 0:
 
                 # Create a trade log from df
                 TL_df = trade_log(TL_StrikeList,TL_EntryPrice,TL_ExitPrice,TL_EntryTime,TL_OptionType)
@@ -306,16 +331,20 @@ while datetime.datetime.now().time() < end_time:
                 CEEntryPrice = ce_ltp
 
                 TL_StrikeList.append(CEStrike)
+                TL_EntryTime.append(time_now())
                 TL_EntryPrice.append(CEEntryPrice)
-                TL_EntryTime.append(datetime.datetime.now().time())
+                TL_ExitPrice.append(None)
+                TL_OptionType.append('Call')
+                TL_Qty.append(CEQty)
 
                 Position = 'Bearish'
 
+                time.sleep(10)
 
 
 
             # post photo to telegram group every half an hour
-            elif minute%30 == 0:
+            elif minute_now() % 30 == 0:
                 
                 # x axis, fig size, padding
                 x = np.arange(len(pnl_list))
@@ -352,40 +381,35 @@ while datetime.datetime.now().time() < end_time:
                 # x and y axis labels, title of chart plus save the final picture to PC
                 plt.ylabel('pnl in ₹')
                 plt.xlabel('time scale')
-                plt.title('Rolling Straddle')
+                plt.title('DND Setup')
                 plt.savefig(f'c:/algo/pnl_monitor/dnd/pnl_{datetime.datetime.now().date()}.png')
 
                 # send pnl photo to telegram
                 photo_path = f'c:/algo/pnl_monitor/dnd/pnl_{datetime.datetime.now().date()}.png'
-                telegram_send_photo_caption(photo_path,f'Current MTM : {pnl_list[-1]}, Time : {datetime.datetime.now().time()}',chat_id)
+                telegram_send_photo_caption(photo_path,f'Current MTM : {pnl_list[-1]}, Time : {time_now()}',chat_id)
 
                 time.sleep(10)
 
 
             # post pnl to telegram group every 5 minutes
-            elif minute%5 == 0:
+            elif minute_now() % 5 == 0:
 
                 # convert the list into a df and export as csv
                 pnl_df = pd.DataFrame()
                 pnl_df['pnl'] = pnl_list
                 pnl_df.to_csv(f'c:/algo/pnl_monitor/dnd/pnl_{datetime.datetime.now().date()}.csv',index=False)
                 
-                print(f'Current MTM : {pnl}, Time :  {datetime.datetime.now().time()}')
+                print(f'Position : {Position}, Current MTM : {pnl}, Time : {time_now()}')
                 time.sleep(10)
 
             
             else:
-                print(f'Banknifty LTP is {banknifty_LTP}, Time: {datetime.datetime.now().time()} and Position is {Position}')
-                print(f'Current MTM : {pnl}, Time : {datetime.datetime.now().time()}')
+                print(f'Position : {Position}, Current MTM : {pnl}, Time : {time_now()}')
                 time.sleep(10)
 
         
         # if position is Bullish
         elif Position == 'Bullish':
-
-            #set minute & second
-            minute = datetime.datetime.now().minute
-            second = datetime.datetime.now().second
 
             # Find ATM
             banknifty_LTP = float(api.get_quotes('NSE',spot_token)['lp'])
@@ -399,7 +423,8 @@ while datetime.datetime.now().time() < end_time:
             # create a list of pnl
             pnl_list.append(pnl)
 
-            if banknifty_LTP < pdh and banknifty_LTP > pdl and minute % 5 == 0:
+            # if market turns neutral
+            if banknifty_LTP < pdh and banknifty_LTP > pdl and minute_now() % 5 == 0:
                 
                 PEQty = 25
                 
@@ -407,7 +432,7 @@ while datetime.datetime.now().time() < end_time:
                 TL_df = trade_log(TL_StrikeList,TL_EntryPrice,TL_ExitPrice,TL_EntryTime,TL_OptionType)
                 print(TL_df)
 
-                # Find open call positions and fetch trading symbol
+                # Find open call positions and fetch put trading symbol to exit
                 open_puts = TL_df[(TL_df['TL_OptionType'] == 'Put') & (TL_df['TL_ExitPrice'].isna())]
                 print(open_puts)
                 put_to_exit = open_puts.iloc[0]['TL_StrikeList']
@@ -431,15 +456,20 @@ while datetime.datetime.now().time() < end_time:
                 CEEntryPrice = ce_ltp
 
                 TL_StrikeList.append(CEStrike)
+                TL_EntryTime.append(time_now())
                 TL_EntryPrice.append(CEEntryPrice)
-                TL_EntryTime.append(datetime.datetime.now().time())
+                TL_ExitPrice.append(None)
+                TL_OptionType.append('Call')
+                TL_Qty.append(CEQty)
 
                 Position = 'Neutral'
+
+                time.sleep(10)
 
 
 
             # post photo to telegram group every half an hour
-            elif minute%30 == 0:
+            elif minute_now() %30 == 0:
                 
                 # x axis, fig size, padding
                 x = np.arange(len(pnl_list))
@@ -476,31 +506,30 @@ while datetime.datetime.now().time() < end_time:
                 # x and y axis labels, title of chart plus save the final picture to PC
                 plt.ylabel('pnl in ₹')
                 plt.xlabel('time scale')
-                plt.title('Rolling Straddle')
+                plt.title('DND Setup')
                 plt.savefig(f'c:/algo/pnl_monitor/dnd/pnl_{datetime.datetime.now().date()}.png')
 
                 # send pnl photo to telegram
                 photo_path = f'c:/algo/pnl_monitor/dnd/pnl_{datetime.datetime.now().date()}.png'
-                telegram_send_photo_caption(photo_path,f'Current MTM : {pnl_list[-1]}, Time : {datetime.datetime.now().time()}',chat_id)
+                telegram_send_photo_caption(photo_path,f'Current MTM : {pnl_list[-1]}, Time : {time_now()}',chat_id)
 
                 time.sleep(10)
 
 
 
             # post pnl to telegram group every 5 minutes
-            elif minute%5 == 0:
+            elif minute_now() %5 == 0:
 
                 # convert the list into a df and export as csv
                 pnl_df = pd.DataFrame()
                 pnl_df['pnl'] = pnl_list
                 pnl_df.to_csv(f'c:/algo/pnl_monitor/dnd/pnl_{datetime.datetime.now().date()}.csv',index=False)
                 
-                print(f'Current MTM : {pnl}, Time :  {datetime.datetime.now().time()}')
+                print(f'Position : {Position}, Current MTM : {pnl}, Time : {time_now()}')
                 time.sleep(10)
 
             else:
-                print(f'Banknifty LTP is {banknifty_LTP}, Time: {datetime.datetime.now().time()} and Position is {Position}')
-                print(f'Current MTM : {pnl}, Time : {datetime.datetime.now().time()}')
+                print(f'Position : {Position}, Current MTM : {pnl}, Time : {time_now()}')
                 time.sleep(10)
 
 
@@ -508,10 +537,6 @@ while datetime.datetime.now().time() < end_time:
 
         # if position is Bearish
         elif Position == 'Bearish':
-
-            #set minute & second
-            minute = datetime.datetime.now().minute
-            second = datetime.datetime.now().second
 
             # Find ATM
             banknifty_LTP = float(api.get_quotes('NSE',spot_token)['lp'])
@@ -525,7 +550,7 @@ while datetime.datetime.now().time() < end_time:
             # create a list of pnl
             pnl_list.append(pnl)
 
-            if banknifty_LTP < pdh and banknifty_LTP > pdl and minute % 5 == 0:
+            if banknifty_LTP < pdh and banknifty_LTP > pdl and minute_now() % 5 == 0:
                 
                 CEQty = 25
                         
@@ -557,16 +582,20 @@ while datetime.datetime.now().time() < end_time:
                 PEEntryPrice = pe_ltp
 
                 TL_StrikeList.append(PEStrike)
+                TL_EntryTime.append(time_now())
                 TL_EntryPrice.append(PEEntryPrice)
-                TL_EntryTime.append(datetime.datetime.now().time())
+                TL_ExitPrice.append(None)
+                TL_OptionType.append('Put')
+                TL_Qty.append(PEQty)
 
                 Position = 'Neutral'
 
+                time.sleep(10)
 
 
 
             # post photo to telegram group every half an hour
-            elif minute%30 == 0:
+            elif minute_now() %30 == 0:
                 
                 # x axis, fig size, padding
                 x = np.arange(len(pnl_list))
@@ -603,36 +632,35 @@ while datetime.datetime.now().time() < end_time:
                 # x and y axis labels, title of chart plus save the final picture to PC
                 plt.ylabel('pnl in ₹')
                 plt.xlabel('time scale')
-                plt.title('Rolling Straddle')
+                plt.title('DND Setup')
                 plt.savefig(f'c:/algo/pnl_monitor/dnd/pnl_{datetime.datetime.now().date()}.png')
 
                 # send pnl photo to telegram
                 photo_path = f'c:/algo/pnl_monitor/dnd/pnl_{datetime.datetime.now().date()}.png'
-                telegram_send_photo_caption(photo_path,f'Current MTM : {pnl_list[-1]}, Time : {datetime.datetime.now().time()}',chat_id)
+                telegram_send_photo_caption(photo_path,f'Current MTM : {pnl_list[-1]}, Time : {time_now()}',chat_id)
 
                 time.sleep(10)
 
 
             # post pnl to telegram group every 5 minutes
-            elif minute%5 == 0:
+            elif minute_now() %5 == 0:
 
                 # convert the list into a df and export as csv
                 pnl_df = pd.DataFrame()
                 pnl_df['pnl'] = pnl_list
                 pnl_df.to_csv(f'c:/algo/pnl_monitor/dnd/pnl_{datetime.datetime.now().date()}.csv',index=False)
                 
-                print(f'Current MTM : {pnl}, Time :  {datetime.datetime.now().time()}')
+                print(f'Position : {Position}, Current MTM : {pnl}, Time : {time_now()}')
                 time.sleep(10)
 
             else:
-                print(f'Banknifty LTP is {banknifty_LTP}, Time: {datetime.datetime.now().time()} & Position is {Position}')
-                print(f'Current MTM : {pnl}, Time : {datetime.datetime.now().time()}')
+                print(f'Position : {Position}, Current MTM : {pnl}, Time : {time_now()}')
                 time.sleep(10)
 
 
         else:
             time.sleep(10)
-            print(f'Waiting for 10 seconds. Banknifty LTP is {banknifty_LTP}')
+            print(f'Wait for 10 seconds. Banknifty LTP is {banknifty_LTP}, Time : {time_now()}')
 
     except:
         pass
@@ -755,9 +783,9 @@ plt.axhline(y=avg_pnl,color='blue')
 # x and y axis labels, title of chart plus save the final picture to PC
 plt.ylabel('pnl in ₹')
 plt.xlabel('time scale')
-plt.title('Rolling Straddle')
+plt.title('DND Setup')
 plt.savefig(f'c:/algo/pnl_monitor/dnd/pnl_{datetime.datetime.now().date()}.png')
 
 # send pnl photo to telegram
 photo_path = f'c:/algo/pnl_monitor/dnd/pnl_{datetime.datetime.now().date()}.png'
-telegram_send_photo_caption(photo_path,f'Current MTM : {pnl_list[-1]}, Time : {datetime.datetime.now().time()}',chat_id)
+telegram_send_photo_caption(photo_path,f'Current MTM : {pnl_list[-1]}, Time : {time_now()}',chat_id)
