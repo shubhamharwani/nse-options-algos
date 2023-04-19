@@ -287,11 +287,11 @@ while time_now() < end_time:
                 print(telegram_send_message(f'Sell {PEQty} qty {pe_tsym} at {pe_ltp}',chat_id))
 
                 PEStrike = pe_tsym
-                PEEntryPrice = pe_ltp
+                PEEntryPrice = pe_ltp + (pnl/50)
 
                 TL_StrikeList.append(PEStrike)
                 TL_EntryTime.append(time_now())
-                TL_EntryPrice.append(PEEntryPrice)
+                TL_EntryPrice.append(pe_ltp)
                 TL_ExitPrice.append(None)
                 TL_OptionType.append('Put')
                 TL_Qty.append(PEQty)
@@ -329,11 +329,11 @@ while time_now() < end_time:
                 print(telegram_send_message(f'Sell {CEQty} qty {ce_tsym} at {ce_ltp}',chat_id))
 
                 CEStrike = ce_tsym
-                CEEntryPrice = ce_ltp
+                CEEntryPrice = ce_ltp  + (pnl/50)
 
                 TL_StrikeList.append(CEStrike)
                 TL_EntryTime.append(time_now())
-                TL_EntryPrice.append(CEEntryPrice)
+                TL_EntryPrice.append(ce_ltp)
                 TL_ExitPrice.append(None)
                 TL_OptionType.append('Call')
                 TL_Qty.append(CEQty)
@@ -454,11 +454,11 @@ while time_now() < end_time:
                 print(telegram_send_message(f'Sell {CEQty} qty {ce_tsym} at {ce_ltp}',chat_id))
 
                 CEStrike = ce_tsym
-                CEEntryPrice = ce_ltp
+                CEEntryPrice = ce_ltp  + (pnl/50)
 
                 TL_StrikeList.append(CEStrike)
                 TL_EntryTime.append(time_now())
-                TL_EntryPrice.append(CEEntryPrice)
+                TL_EntryPrice.append(ce_ltp)
                 TL_ExitPrice.append(None)
                 TL_OptionType.append('Call')
                 TL_Qty.append(CEQty)
@@ -580,11 +580,11 @@ while time_now() < end_time:
                 print(telegram_send_message(f'Sell {PEQty} qty {pe_tsym} at {pe_ltp}',chat_id))
 
                 PEStrike = pe_tsym
-                PEEntryPrice = pe_ltp
+                PEEntryPrice = pe_ltp  + (pnl/50)
 
                 TL_StrikeList.append(PEStrike)
                 TL_EntryTime.append(time_now())
-                TL_EntryPrice.append(PEEntryPrice)
+                TL_EntryPrice.append(pe_ltp)
                 TL_ExitPrice.append(None)
                 TL_OptionType.append('Put')
                 TL_Qty.append(PEQty)
