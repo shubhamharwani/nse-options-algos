@@ -127,13 +127,14 @@ while time_now() < start_time:
 tv = tvDatafeed.TvDatafeed()
 # fetch last 2 days data
 data = tv.get_hist(symbol='BANKNIFTY',exchange='NSE',interval=tvDatafeed.Interval.in_daily,n_bars=2,fut_contract=None)
+print(data)
 
 # access yesterday's hlc
 pdh = data.iloc[0]['high']
 pdl = data.iloc[0]['low']
 TodayOpen = data.iloc[1]['open']
 
-print(telegram_send_message(f'\nPDH is {pdh}, PDH is {pdl} & Today\'s Open is {TodayOpen} '))
+print(telegram_send_message(f'\nPDH is {pdh}, PDL is {pdl} & Today\'s Open is {TodayOpen}',chat_id))
 
 # EXECUTE AT START TIME
 while True:
@@ -297,7 +298,7 @@ while time_now() < end_time:
 
                 Position = 'Bullish'
 
-                time.sleep(10)
+                time.sleep(60)
 
 
             # If position turns bearish
@@ -339,7 +340,7 @@ while time_now() < end_time:
 
                 Position = 'Bearish'
 
-                time.sleep(10)
+                time.sleep(60)
 
 
 
@@ -388,7 +389,7 @@ while time_now() < end_time:
                 photo_path = f'c:/algo/pnl_monitor/dnd/pnl_{datetime.datetime.now().date()}.png'
                 telegram_send_photo_caption(photo_path,f'Current MTM : {pnl_list[-1]}, Time : {time_now()}',chat_id)
 
-                time.sleep(10)
+                time.sleep(60)
 
 
             # post pnl to telegram group every 5 minutes
@@ -400,7 +401,7 @@ while time_now() < end_time:
                 pnl_df.to_csv(f'c:/algo/pnl_monitor/dnd/pnl_{datetime.datetime.now().date()}.csv',index=False)
                 
                 print(f'Position : {Position}, Current MTM : {pnl}, Time : {time_now()}')
-                time.sleep(10)
+                time.sleep(60)
 
             
             else:
@@ -464,7 +465,7 @@ while time_now() < end_time:
 
                 Position = 'Neutral'
 
-                time.sleep(10)
+                time.sleep(60)
 
 
 
@@ -513,7 +514,7 @@ while time_now() < end_time:
                 photo_path = f'c:/algo/pnl_monitor/dnd/pnl_{datetime.datetime.now().date()}.png'
                 telegram_send_photo_caption(photo_path,f'Current MTM : {pnl_list[-1]}, Time : {time_now()}',chat_id)
 
-                time.sleep(10)
+                time.sleep(60)
 
 
 
@@ -526,7 +527,7 @@ while time_now() < end_time:
                 pnl_df.to_csv(f'c:/algo/pnl_monitor/dnd/pnl_{datetime.datetime.now().date()}.csv',index=False)
                 
                 print(f'Position : {Position}, Current MTM : {pnl}, Time : {time_now()}')
-                time.sleep(10)
+                time.sleep(60)
 
             else:
                 print(f'Position : {Position}, Current MTM : {pnl}, Time : {time_now()}')
@@ -590,7 +591,7 @@ while time_now() < end_time:
 
                 Position = 'Neutral'
 
-                time.sleep(10)
+                time.sleep(60)
 
 
 
@@ -639,7 +640,7 @@ while time_now() < end_time:
                 photo_path = f'c:/algo/pnl_monitor/dnd/pnl_{datetime.datetime.now().date()}.png'
                 telegram_send_photo_caption(photo_path,f'Current MTM : {pnl_list[-1]}, Time : {time_now()}',chat_id)
 
-                time.sleep(10)
+                time.sleep(60)
 
 
             # post pnl to telegram group every 5 minutes
@@ -651,7 +652,7 @@ while time_now() < end_time:
                 pnl_df.to_csv(f'c:/algo/pnl_monitor/dnd/pnl_{datetime.datetime.now().date()}.csv',index=False)
                 
                 print(f'Position : {Position}, Current MTM : {pnl}, Time : {time_now()}')
-                time.sleep(10)
+                time.sleep(60)
 
             else:
                 print(f'Position : {Position}, Current MTM : {pnl}, Time : {time_now()}')
