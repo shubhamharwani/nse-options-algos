@@ -155,7 +155,7 @@ while True:
         pe_ltp = float(api.get_quotes(exchange='NFO',token=pe_tsym)['lp'])
         CEQty = 25
         PEQty = 25
-        print(telegram_send_message(f'\nSell {CEQty} qty {ce_tsym} at {ce_ltp} \nSell {PEQty} qty {pe_tsym} at {pe_ltp}',chat_id))
+        print(telegram_send_message(f'\nSell {CEQty} qty {ce_tsym} at {ce_ltp} \nSell {PEQty} qty {pe_tsym} at {pe_ltp} \n Time: {time_now()}',chat_id))
 
         CEStrike = ce_tsym
         CEEntryPrice = ce_ltp
@@ -185,7 +185,7 @@ while True:
         pe_tsym = pe_symbol(100)
         pe_ltp = float(api.get_quotes(exchange='NFO',token=pe_tsym)['lp'])
         PEQty = 50
-        print(telegram_send_message(f'\nSell {PEQty} qty {pe_tsym} at {pe_ltp}',chat_id))
+        print(telegram_send_message(f'\nSell {PEQty} qty {pe_tsym} at {pe_ltp} \n Time: {time_now()}',chat_id))
 
         PEStrike = pe_tsym
         PEEntryPrice = pe_ltp
@@ -208,7 +208,7 @@ while True:
         ce_tsym = ce_symbol(100)
         ce_ltp = float(api.get_quotes(exchange='NFO',token=ce_tsym)['lp'])
         CEQty = 50
-        print(telegram_send_message(f'Sell {CEQty} qty {ce_tsym} at {ce_ltp}',chat_id))
+        print(telegram_send_message(f'Sell {CEQty} qty {ce_tsym} at {ce_ltp} \n Time: {time_now()}',chat_id))
 
         CEStrike = ce_tsym
         CEEntryPrice = ce_ltp
@@ -277,14 +277,14 @@ while time_now() < end_time:
                 CallToExitIndex = TL_df.loc[(TL_df['TL_OptionType'] == 'Call') & (TL_df['TL_ExitPrice'].isna()), 'TL_ExitPrice'].index[0]
                 TL_ExitPrice[CallToExitIndex] = CE_ExitPrice
 
-                print(telegram_send_message(f'Exit {CEQty} qty {call_to_exit} at {CE_ExitPrice}',chat_id))
+                print(telegram_send_message(f'Exit {CEQty} qty {call_to_exit} at {CE_ExitPrice} \n Time: {time_now()}',chat_id))
 
 
                 # find new PE of 100 rs premium
                 pe_tsym = pe_symbol(100)
                 pe_ltp = float(api.get_quotes(exchange='NFO',token=pe_tsym)['lp'])
                 PEQty = 25
-                print(telegram_send_message(f'Sell {PEQty} qty {pe_tsym} at {pe_ltp}',chat_id))
+                print(telegram_send_message(f'Sell {PEQty} qty {pe_tsym} at {pe_ltp} \n Time: {time_now()}',chat_id))
 
                 PEStrike = pe_tsym
                 PEEntryPrice = pe_ltp + (pnl/50)
@@ -319,14 +319,14 @@ while time_now() < end_time:
                 PutToExitIndex = TL_df.loc[(TL_df['TL_OptionType'] == 'Put') & (TL_df['TL_ExitPrice'].isna()), 'TL_ExitPrice'].index[0]
                 TL_ExitPrice[PutToExitIndex] = PE_ExitPrice
 
-                print(telegram_send_message(f'Exit {PEQty} qty {put_to_exit} at {PE_ExitPrice}',chat_id))
+                print(telegram_send_message(f'Exit {PEQty} qty {put_to_exit} at {PE_ExitPrice} \n Time: {time_now()}',chat_id))
 
 
                 # find new CE of 100 rs premium
                 ce_tsym = ce_symbol(100)
                 ce_ltp = float(api.get_quotes(exchange='NFO',token=ce_tsym)['lp'])
                 CEQty = 25
-                print(telegram_send_message(f'Sell {CEQty} qty {ce_tsym} at {ce_ltp}',chat_id))
+                print(telegram_send_message(f'Exit {PEQty} qty {put_to_exit} at {PE_ExitPrice} \nSell {CEQty} qty {ce_tsym} at {ce_ltp} \n Time: {time_now()}',chat_id))
 
                 CEStrike = ce_tsym
                 CEEntryPrice = ce_ltp  + (pnl/50)
@@ -444,14 +444,14 @@ while time_now() < end_time:
                 PutToExitIndex = TL_df.loc[(TL_df['TL_OptionType'] == 'Put') & (TL_df['TL_ExitPrice'].isna()), 'TL_ExitPrice'].index[0]
                 TL_ExitPrice[PutToExitIndex] = PE_ExitPrice
 
-                print(telegram_send_message(f'Exit {PEQty} qty {put_to_exit} at {PE_ExitPrice}',chat_id))
+                print(telegram_send_message(f'Exit {PEQty} qty {put_to_exit} at {PE_ExitPrice}  \n Time: {time_now()}',chat_id))
 
 
                 # find new CE of 100 rs premium
                 ce_tsym = ce_symbol(100)
                 ce_ltp = float(api.get_quotes(exchange='NFO',token=ce_tsym)['lp'])
                 CEQty = 25
-                print(telegram_send_message(f'Sell {CEQty} qty {ce_tsym} at {ce_ltp}',chat_id))
+                print(telegram_send_message(f'Sell {CEQty} qty {ce_tsym} at {ce_ltp} \n Time: {time_now()}',chat_id))
 
                 CEStrike = ce_tsym
                 CEEntryPrice = ce_ltp  + (pnl/50)
@@ -570,14 +570,14 @@ while time_now() < end_time:
                 CallToExitIndex = TL_df.loc[(TL_df['TL_OptionType'] == 'Call') & (TL_df['TL_ExitPrice'].isna()), 'TL_ExitPrice'].index[0]
                 TL_ExitPrice[CallToExitIndex] = CE_ExitPrice
 
-                print(telegram_send_message(f'Exit {CEQty} qty {call_to_exit} at {CE_ExitPrice}',chat_id))
+                print(telegram_send_message(f'Exit {CEQty} qty {call_to_exit} at {CE_ExitPrice} \n Time: {time_now()}',chat_id))
 
 
                 # find new PE of 100 rs premium
                 pe_tsym = pe_symbol(100)
                 pe_ltp = float(api.get_quotes(exchange='NFO',token=pe_tsym)['lp'])
                 PEQty = 25
-                print(telegram_send_message(f'Sell {PEQty} qty {pe_tsym} at {pe_ltp}',chat_id))
+                print(telegram_send_message(f'Sell {PEQty} qty {pe_tsym} at {pe_ltp} \n Time: {time_now()}',chat_id))
 
                 PEStrike = pe_tsym
                 PEEntryPrice = pe_ltp  + (pnl/50)
@@ -695,8 +695,7 @@ if Position == 'Neutral':
     PutToExitIndex = TL_df.loc[(TL_df['TL_OptionType'] == 'Put') & (TL_df['TL_ExitPrice'].isna()), 'TL_ExitPrice'].index[0]
     TL_ExitPrice[PutToExitIndex] = PE_ExitPrice
 
-    print(telegram_send_message(f'Exit {CEQty} qty {call_to_exit} at {CE_ExitPrice}',chat_id))
-    print(telegram_send_message(f'Exit {PEQty} qty {put_to_exit} at {PE_ExitPrice}',chat_id))
+    print(telegram_send_message(f'Exit {CEQty} qty {call_to_exit} at {CE_ExitPrice} \nExit {PEQty} qty {put_to_exit} at {PE_ExitPrice} \nTime: {time_now()}',chat_id))
 
 elif Position == 'Bullish':
 
@@ -708,14 +707,19 @@ elif Position == 'Bullish':
     open_puts = TL_df[(TL_df['TL_OptionType'] == 'Put') & (TL_df['TL_ExitPrice'].isna())]
     print(open_puts)
     put_to_exit = open_puts.iloc[0]['TL_StrikeList']
-    print(f'put_to_exit is {put_to_exit}')
+    put_to_exit1 = open_puts.iloc[1]['TL_StrikeList']
+    print(f'put_to_exit is {put_to_exit} & {put_to_exit1}')
 
     # Fetch LTP of open call and exit on limit & record it in trade log list
     PE_ExitPrice = float(api.get_quotes(exchange='NFO',token=put_to_exit)['lp'])
+    PE_ExitPrice1 = float(api.get_quotes(exchange='NFO',token=put_to_exit1)['lp'])
+
+    print(telegram_send_message(f'Exit {PEQty} qty {put_to_exit} at {PE_ExitPrice} & {put_to_exit1} at {PE_ExitPrice1} \nTime: {time_now()}',chat_id))
+
     PutToExitIndex = TL_df.loc[(TL_df['TL_OptionType'] == 'Put') & (TL_df['TL_ExitPrice'].isna()), 'TL_ExitPrice'].index[0]
     TL_ExitPrice[PutToExitIndex] = PE_ExitPrice
-
-    print(telegram_send_message(f'Exit {PEQty} qty {put_to_exit} at {PE_ExitPrice}',chat_id))
+    PutToExitIndex = TL_df.loc[(TL_df['TL_OptionType'] == 'Put') & (TL_df['TL_ExitPrice'].isna()), 'TL_ExitPrice'].index[0]
+    TL_ExitPrice[PutToExitIndex] = PE_ExitPrice
 
 elif Position == 'Bearish':
 
@@ -726,14 +730,21 @@ elif Position == 'Bearish':
     open_calls = TL_df[(TL_df['TL_OptionType'] == 'Call') & (TL_df['TL_ExitPrice'].isna())]
     print(open_calls)
     call_to_exit = open_calls.iloc[0]['TL_StrikeList']
-    print(f'call_to_exit is {call_to_exit}')
+    call_to_exit1 = open_calls.iloc[1]['TL_StrikeList']
+    print(f'call_to_exit is {call_to_exit} & {call_to_exit1}')
    
     # Fetch LTP of open call and exit on limit & record it in trade log list
     CE_ExitPrice = float(api.get_quotes(exchange='NFO',token=call_to_exit)['lp'])
+    CE_ExitPrice1 = float(api.get_quotes(exchange='NFO',token=call_to_exit1)['lp'])
+
+    print(telegram_send_message(f'Exit {CEQty} qty {call_to_exit} at {CE_ExitPrice} & {call_to_exit1} at {CE_ExitPrice1} \nTime: {time_now()}',chat_id))
+
+    CallToExitIndex = TL_df.loc[(TL_df['TL_OptionType'] == 'Call') & (TL_df['TL_ExitPrice'].isna()), 'TL_ExitPrice'].index[0]
+    TL_ExitPrice[CallToExitIndex] = CE_ExitPrice
     CallToExitIndex = TL_df.loc[(TL_df['TL_OptionType'] == 'Call') & (TL_df['TL_ExitPrice'].isna()), 'TL_ExitPrice'].index[0]
     TL_ExitPrice[CallToExitIndex] = CE_ExitPrice
 
-    print(telegram_send_message(f'Exit {CEQty} qty {call_to_exit} at {CE_ExitPrice}',chat_id))
+    
 
 else:
     pass
