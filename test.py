@@ -718,8 +718,8 @@ elif Position == 'Bullish':
 
     PutToExitIndex = TL_df.loc[(TL_df['TL_OptionType'] == 'Put') & (TL_df['TL_ExitPrice'].isna()), 'TL_ExitPrice'].index[0]
     TL_ExitPrice[PutToExitIndex] = PE_ExitPrice
-    PutToExitIndex = TL_df.loc[(TL_df['TL_OptionType'] == 'Put') & (TL_df['TL_ExitPrice'].isna()), 'TL_ExitPrice'].index[0]
-    TL_ExitPrice[PutToExitIndex] = PE_ExitPrice
+    PutToExitIndex = TL_df.loc[(TL_df['TL_OptionType'] == 'Put') & (TL_df['TL_ExitPrice'].isna()), 'TL_ExitPrice'].index[1]
+    TL_ExitPrice[PutToExitIndex] = PE_ExitPrice1
 
 elif Position == 'Bearish':
 
@@ -741,8 +741,8 @@ elif Position == 'Bearish':
 
     CallToExitIndex = TL_df.loc[(TL_df['TL_OptionType'] == 'Call') & (TL_df['TL_ExitPrice'].isna()), 'TL_ExitPrice'].index[0]
     TL_ExitPrice[CallToExitIndex] = CE_ExitPrice
-    CallToExitIndex = TL_df.loc[(TL_df['TL_OptionType'] == 'Call') & (TL_df['TL_ExitPrice'].isna()), 'TL_ExitPrice'].index[0]
-    TL_ExitPrice[CallToExitIndex] = CE_ExitPrice
+    CallToExitIndex = TL_df.loc[(TL_df['TL_OptionType'] == 'Call') & (TL_df['TL_ExitPrice'].isna()), 'TL_ExitPrice'].index[1]
+    TL_ExitPrice[CallToExitIndex] = CE_ExitPrice1
 
     
 
