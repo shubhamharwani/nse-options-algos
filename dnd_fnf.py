@@ -101,7 +101,7 @@ def second_now():
     return second_now
 
 # chat ID of telegram channel
-chat_id = -1001970862315
+chat_id = "YOUR_TELEGRAM_CHAT_ID"
 # ALGO STARTED
 print(telegram_send_message(f'\nDND Setup FNF - Algo Started @ {time_now()}',chat_id))
 
@@ -383,10 +383,10 @@ while time_now() < end_time:
                 plt.ylabel('pnl in ₹')
                 plt.xlabel('time scale')
                 plt.title('dnd_FNF Setup')
-                plt.savefig(f'c:/algo/pnl_monitor/dnd_FNF/pnl_{datetime.datetime.now().date()}.png')
+                plt.savefig(f'output/pnl_{datetime.datetime.now().date()}.png')
 
                 # send pnl photo to telegram
-                photo_path = f'c:/algo/pnl_monitor/dnd_FNF/pnl_{datetime.datetime.now().date()}.png'
+                photo_path = f'output/pnl_{datetime.datetime.now().date()}.png'
                 telegram_send_photo_caption(photo_path,f'Current MTM : {pnl_list[-1]}, Time : {time_now()}',chat_id)
 
                 time.sleep(60)
@@ -398,7 +398,7 @@ while time_now() < end_time:
                 # convert the list into a df and export as csv
                 pnl_df = pd.DataFrame()
                 pnl_df['pnl'] = pnl_list
-                pnl_df.to_csv(f'c:/algo/pnl_monitor/dnd_FNF/pnl_{datetime.datetime.now().date()}.csv',index=False)
+                pnl_df.to_csv(f'output/pnl_{datetime.datetime.now().date()}.csv',index=False)
                 
                 print(f'Position : {Position}, Current MTM : {pnl}, Time : {time_now()}')
                 time.sleep(60)
@@ -508,10 +508,10 @@ while time_now() < end_time:
                 plt.ylabel('pnl in ₹')
                 plt.xlabel('time scale')
                 plt.title('dnd_FNF Setup')
-                plt.savefig(f'c:/algo/pnl_monitor/dnd_FNF/pnl_{datetime.datetime.now().date()}.png')
+                plt.savefig(f'output/pnl_{datetime.datetime.now().date()}.png')
 
                 # send pnl photo to telegram
-                photo_path = f'c:/algo/pnl_monitor/dnd_FNF/pnl_{datetime.datetime.now().date()}.png'
+                photo_path = f'output/pnl_{datetime.datetime.now().date()}.png'
                 telegram_send_photo_caption(photo_path,f'Current MTM : {pnl_list[-1]}, Time : {time_now()}',chat_id)
 
                 time.sleep(60)
@@ -524,7 +524,7 @@ while time_now() < end_time:
                 # convert the list into a df and export as csv
                 pnl_df = pd.DataFrame()
                 pnl_df['pnl'] = pnl_list
-                pnl_df.to_csv(f'c:/algo/pnl_monitor/dnd_FNF/pnl_{datetime.datetime.now().date()}.csv',index=False)
+                pnl_df.to_csv(f'output/pnl_{datetime.datetime.now().date()}.csv',index=False)
                 
                 print(f'Position : {Position}, Current MTM : {pnl}, Time : {time_now()}')
                 time.sleep(60)
@@ -634,10 +634,10 @@ while time_now() < end_time:
                 plt.ylabel('pnl in ₹')
                 plt.xlabel('time scale')
                 plt.title('dnd_FNF Setup')
-                plt.savefig(f'c:/algo/pnl_monitor/dnd_FNF/pnl_{datetime.datetime.now().date()}.png')
+                plt.savefig(f'output/pnl_{datetime.datetime.now().date()}.png')
 
                 # send pnl photo to telegram
-                photo_path = f'c:/algo/pnl_monitor/dnd_FNF/pnl_{datetime.datetime.now().date()}.png'
+                photo_path = f'output/pnl_{datetime.datetime.now().date()}.png'
                 telegram_send_photo_caption(photo_path,f'Current MTM : {pnl_list[-1]}, Time : {time_now()}',chat_id)
 
                 time.sleep(60)
@@ -649,7 +649,7 @@ while time_now() < end_time:
                 # convert the list into a df and export as csv
                 pnl_df = pd.DataFrame()
                 pnl_df['pnl'] = pnl_list
-                pnl_df.to_csv(f'c:/algo/pnl_monitor/dnd_FNF/pnl_{datetime.datetime.now().date()}.csv',index=False)
+                pnl_df.to_csv(f'output/pnl_{datetime.datetime.now().date()}.csv',index=False)
                 
                 print(f'Position : {Position}, Current MTM : {pnl}, Time : {time_now()}')
                 time.sleep(60)
@@ -753,8 +753,8 @@ else:
 # create a dataframe for trade log and post csv on telegram channel
 TL_df = trade_log(TL_StrikeList,TL_EntryPrice,TL_ExitPrice,TL_EntryTime,TL_OptionType)
 print(TL_df)
-TL_df.to_csv(f'c:/algo/pnl_monitor/dnd_FNF/tradelog_{datetime.datetime.now().date()}.csv',index=False)
-telegram_send_file(f'c:/algo/pnl_monitor/dnd_FNF/tradelog_{datetime.datetime.now().date()}.csv',chat_id)
+TL_df.to_csv(f'output/tradelog_{datetime.datetime.now().date()}.csv',index=False)
+telegram_send_file(f'output/tradelog_{datetime.datetime.now().date()}.csv',chat_id)
 
 
 # after the trade is over, post pnl chart with max pnl, min pnl and avg pnl stats
@@ -796,8 +796,8 @@ plt.axhline(y=avg_pnl,color='blue')
 plt.ylabel('pnl in ₹')
 plt.xlabel('time scale')
 plt.title('dnd_FNF Setup')
-plt.savefig(f'c:/algo/pnl_monitor/dnd_FNF/pnl_{datetime.datetime.now().date()}.png')
+plt.savefig(f'output/pnl_{datetime.datetime.now().date()}.png')
 
 # send pnl photo to telegram
-photo_path = f'c:/algo/pnl_monitor/dnd_FNF/pnl_{datetime.datetime.now().date()}.png'
+photo_path = f'output/pnl_{datetime.datetime.now().date()}.png'
 telegram_send_photo_caption(photo_path,f'Current MTM : {pnl_list[-1]}, Time : {time_now()}',chat_id)
