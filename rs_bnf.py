@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-chat_id = -1001800599514
+chat_id = "YOUR_TELEGRAM_CHAT_ID"
 # ALGO STARTED
 print(telegram_send_message(f'\nRS BNF - Algo Started @ {datetime.datetime.now().time()}',chat_id))
 
@@ -219,10 +219,10 @@ while datetime.datetime.now().time() < end_time:
             plt.ylabel('pnl in ₹')
             plt.xlabel('time scale')
             plt.title('RS BNF')
-            plt.savefig(f'c:/algo/pnl_monitor/rs_bnf/pnl_{datetime.datetime.now().date()}.png')
+            plt.savefig(f'output/pnl_{datetime.datetime.now().date()}.png')
 
             # send pnl photo to telegram
-            photo_path = f'c:/algo/pnl_monitor/rs_bnf/pnl_{datetime.datetime.now().date()}.png'
+            photo_path = f'output/pnl_{datetime.datetime.now().date()}.png'
             telegram_send_photo_caption(photo_path,f'Current MTM : {pnl_list[-1]}, Time : {datetime.datetime.now().time()}',chat_id)
 
             time.sleep(10)
@@ -235,7 +235,7 @@ while datetime.datetime.now().time() < end_time:
             # convert the list into a df and export as csv
             pnl_df = pd.DataFrame()
             pnl_df['pnl'] = pnl_list
-            pnl_df.to_csv(f'c:/algo/pnl_monitor/rs_bnf/pnl_{datetime.datetime.now().date()}.csv',index=False)
+            pnl_df.to_csv(f'output/pnl_{datetime.datetime.now().date()}.csv',index=False)
             
             print(f'Current MTM : {pnl}, Time :  {datetime.datetime.now().time()}')
             time.sleep(10)
@@ -262,8 +262,8 @@ trade_log['Strike'] = TL_StrikeList
 trade_log['Entry Time'] = TL_EntryTime
 trade_log['Entry Price'] = TL_EntryPrice
 trade_log['Exit Price'] = TL_ExitPrice
-trade_log.to_csv(f'c:/algo/pnl_monitor/rs_bnf/tradelog_{datetime.datetime.now().date()}.csv',index=False)
-telegram_send_file(f'c:/algo/pnl_monitor/rs_bnf/tradelog_{datetime.datetime.now().date()}.csv',chat_id)
+trade_log.to_csv(f'output/tradelog_{datetime.datetime.now().date()}.csv',index=False)
+telegram_send_file(f'output/tradelog_{datetime.datetime.now().date()}.csv',chat_id)
 
 
 # after the trade is over, post pnl chart with max pnl, min pnl and avg pnl stats
@@ -305,8 +305,8 @@ plt.axhline(y=avg_pnl,color='blue')
 plt.ylabel('pnl in ₹')
 plt.xlabel('time scale')
 plt.title('RS BNF')
-plt.savefig(f'c:/algo/pnl_monitor/rs_bnf/pnl_{datetime.datetime.now().date()}.png')
+plt.savefig(f'output/pnl_{datetime.datetime.now().date()}.png')
 
 # send pnl photo to telegram
-photo_path = f'c:/algo/pnl_monitor/rs_bnf/pnl_{datetime.datetime.now().date()}.png'
+photo_path = f'output/pnl_{datetime.datetime.now().date()}.png'
 telegram_send_photo_caption(photo_path,f'Current MTM : {pnl_list[-1]}, Time : {datetime.datetime.now().time()}',chat_id)
